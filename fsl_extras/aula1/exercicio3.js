@@ -1,0 +1,1 @@
+// Dado um vetor de números, como poderia ser realizada a soma de todos os valores ímpares utilizando reduce e filter.
