@@ -14,38 +14,62 @@ const readDir = (dir) => new Promise((resolve, reject) => {
     })
 })
 
-const diretorio = (dir) => new Promise((reject, resolve) => {
-    fs.stat(dir, (err, stats) => {
+const isDirectory = async (path) => {
+    const stats = await stat(path) 
+    return stats.isDirectory() ? path : false
+}
+
+const stat = (path) => new Promise((resolve, reject) => {
+    fs.stat(path, (err, stats) => {
         if (err) {
             reject(err)
         } else {
-            if (stats.isDirectory()) {
-                resolve(dir)
-            }
-       }
+            resolve(stats)
+        }
     })
 })
 
-const diretorios = async (dir) => {
-
-    try {
-        const files = await readDir(dir)
-
-        let promises = []
-
-        files.forEach(file => {
-            promises.push(diretorio(path.join(dir, file)))
-        });
-
-        Promise.all(promises).then(results => {
-            console.log(results)
-        }).catch((err) => {
-            console.log(err)
-        })
-
-    } catch (err) {
-        console.log(err)
-    }
+const execute = async () => {
+    const files = await readDir('./')
+    const mapDir = await Promise.all(files.map(file => isDirectory(file)))
+    const directories = mapDir.filter(d => d)
+    console.log(directories);
 }
 
-diretorios('.')
+execute()
+
+// const diretorio = (dir) => new Promise((reject, resolve) => {
+//     fs.stat(dir, (err, stats) => {
+//         if (err) {
+//             reject(err)
+//         } else {
+//             if (stats.isDirectory()) {
+//                 resolve(dir)
+//             }
+//        }
+//     })
+// })
+
+// const diretorios = async (dir) => {
+
+//     try {
+//         const files = await readDir(dir)
+
+//         let promises = []
+
+//         files.forEach(file => {
+//             promises.push(diretorio(path.join(dir, file)))
+//         });
+
+//         Promise.all(promises).then(results => {
+//             console.log(results)
+//         }).catch((err) => {
+//             console.log(err)
+//         })
+
+//     } catch (err) {
+//         console.log(err)
+//     }
+// }
+
+// diretorios('.')
